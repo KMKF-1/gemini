@@ -71,6 +71,22 @@ async function handleAPIRequest(req: Request): Promise<Response> {
 
 async function handleRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
+    if (url.pathname === '/') {
+    return new Response('ok', { status: 200 });
+  }
+```    *   **修改后，代码看起来应该是这样（只展示关键部分）：**
+  ```typescript
+  async function handleRequest(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+    
+    // 我们新加的代码在这里！
+    if (url.pathname === '/') {
+      return new Response('ok', { status: 200 });
+    }
+
+    console.log('Request URL:', req.url);
+    // ... 后续代码保持不变 ...
+  }
   console.log('Request URL:', req.url);
 
   // WebSocket 处理
