@@ -71,34 +71,20 @@ async function handleAPIRequest(req: Request): Promise<Response> {
 
 async function handleRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
-
-  // 优先处理根路径，用于连接测试
-  if (url.pathname === '/') {
-    return new Response('ok', { status: 200 });
-  }
-
   console.log('Request URL:', req.url);
 
-  // 处理 WebSocket 请求
+  // WebSocket 处理
   if (req.headers.get("Upgrade")?.toLowerCase() === "websocket") {
-    return handleWebSocketReq(req);
+    return handleWebSocket(req);
   }
 
-  // 处理核心 API 路径
   if (url.pathname.endsWith("/chat/completions") ||
-      url.pathname.endsWith("/embeddings") ||
-      url.pathname.endsWith("/models")) {
-    return handleOfRequest(req);
+    url.pathname.endsWith("/embeddings") ||
+    url.pathname.endsWith("/models")) {
+    return handleAPIRequest(req);
   }
 
-  // 如果所有路径都不匹配，返回404
-  return new Response("Not Found", { status: 404 });
+  return new Response('ok');
 }
 
-export default { fetch: handleRequest };
-
-// --- 心跳任务：防止服务休眠 ---
-Deno.cron("keep-alive-tick", "*/5 * * * *", () => {
-  // 每5分钟执行一次
-  console.log("Keep-alive tick: Triggered by cron job to prevent sleeping.");
-});
+Deno.serve(handleRequest); 
