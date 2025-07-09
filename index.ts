@@ -74,7 +74,7 @@ async function handleRequest(req: Request): Promise<Response> {
 
   // 优先处理根路径，用于连接测试
   if (url.pathname === '/') {
-    return new Response('ok', { status: 200 });
+return new Response('ok', { status: 200, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
   }
 
   console.log('Request URL:', req.url);
