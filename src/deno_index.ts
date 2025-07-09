@@ -95,7 +95,7 @@ async function handleRequest(req: Request): Promise<Response> {
   return new Response("Not Found", { status: 404 });
 }
 
-Deno.serve(handleRequest); 
+export default { fetch: handleRequest };
 
 // --- 心跳任务：防止服务休眠 ---
 Deno.cron("keep-alive-tick", "*/5 * * * *", () => {
