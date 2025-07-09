@@ -71,36 +71,28 @@ async function handleAPIRequest(req: Request): Promise<Response> {
 
 async function handleRequest(req: Request): Promise<Response> {
   const url = new URL(req.url);
-    if (url.pathname === '/') {
+
+  // 优先处理根路径，用于连接测试
+  if (url.pathname === '/') {
     return new Response('ok', { status: 200 });
   }
-```    *   **修改后，代码看起来应该是这样（只展示关键部分）：**
-  ```typescript
-  async function handleRequest(req: Request): Promise<Response> {
-    const url = new URL(req.url);
-    
-    // 我们新加的代码在这里！
-    if (url.pathname === '/') {
-      return new Response('ok', { status: 200 });
-    }
 
-    console.log('Request URL:', req.url);
-    // ... 后续代码保持不变 ...
-  }
   console.log('Request URL:', req.url);
 
-  // WebSocket 处理
+  // 处理 WebSocket 请求
   if (req.headers.get("Upgrade")?.toLowerCase() === "websocket") {
-    return handleWebSocket(req);
+    return handleWebSocketReq(req);
   }
 
+  // 处理核心 API 路径
   if (url.pathname.endsWith("/chat/completions") ||
-    url.pathname.endsWith("/embeddings") ||
-    url.pathname.endsWith("/models")) {
-    return handleAPIRequest(req);
+      url.pathname.endsWith("/embeddings") ||
+      url.pathname.endsWith("/models")) {
+    return handleOfRequest(req);
   }
 
-  return new Response('ok');
+  // 如果所有路径都不匹配，返回404
+  return new Response("Not Found", { status: 404 });
 }
 
 Deno.serve(handleRequest); 
