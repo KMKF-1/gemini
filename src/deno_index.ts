@@ -88,3 +88,9 @@ async function handleRequest(req: Request): Promise<Response> {
 }
 
 Deno.serve(handleRequest); 
+
+// --- 心跳任务：防止服务休眠 ---
+Deno.cron("keep-alive-tick", "*/5 * * * *", () => {
+  // 每5分钟执行一次
+  console.log("Keep-alive tick: Triggered by cron job to prevent sleeping.");
+});
